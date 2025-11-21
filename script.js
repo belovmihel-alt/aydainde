@@ -1,6 +1,10 @@
 // Инициализация Telegram WebApp
-let tg = window.Telegram.WebApp;
-tg.expand();
+let tg = window.Telegram?.WebApp;
+if (tg) {
+    tg.ready();
+    tg.expand();
+    tg.enableClosingConfirmation();
+}
 
 // Данные приложения
 let appData = {
@@ -17,14 +21,20 @@ let currentEdaCategory = null;
 // Загрузка данных
 async function loadData() {
     try {
+        // Пробуем загрузить data.json
         const response = await fetch('data.json');
-        appData = await response.json();
-        renderWordCards();
+        if (response.ok) {
+            appData = await response.json();
+            console.log('Data loaded from data.json');
+        } else {
+            throw new Error('Failed to load data.json');
+        }
     } catch (error) {
-        console.error('Ошибка загрузки данных:', error);
+        console.log('Using test data:', error.message);
         // Если data.json не загрузился, используем тестовые данные
         loadTestData();
     }
+    renderWordCards();
 }
 
 // Тестовые данные (для разработки)
@@ -344,5 +354,11 @@ function showAddWord() {
 
 // Инициализация при загрузке
 document.addEventListener('DOMContentLoaded', () => {
-    loadData();
+    // Показываем индикатор загрузки
+    console.log('App started');
+    
+    // Даем время для загрузки Telegram WebApp
+    setTimeout(() => {
+        loadData();
+    }, 100);
 });
