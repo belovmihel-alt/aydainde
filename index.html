@@ -10,8 +10,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=2">
-    <script src="https://telegram.org/js/telegram-web-app.js" async></script>
+    <link rel="stylesheet" href="style.css?v=3">
+    
     <style>
         /* Critical CSS - inline для гарантированной загрузки */
         body {
@@ -25,9 +25,57 @@
             background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%) !important;
             border-radius: 0 0 25px 25px !important;
         }
+        
+        /* Индикатор загрузки */
+        #loading-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease;
+        }
+        #loading-screen.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        .loading-logo {
+            font-size: 48px;
+            font-weight: 700;
+            color: white;
+            margin-bottom: 20px;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top-color: white;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.7; transform: scale(0.95); }
+        }
     </style>
 </head>
 <body>
+    <!-- Индикатор загрузки -->
+    <div id="loading-screen">
+        <div class="loading-logo">Айда Инде!</div>
+        <div class="loading-spinner"></div>
+    </div>
+
     <!-- Header -->
     <header>
         <div class="header-content">
@@ -115,7 +163,7 @@
         <div id="edaPage" class="page">
             <div class="eda-buttons">
                 <button class="eda-category-btn" onclick="showEdaCategory('places')">
-                    📍 Где поесть
+                    🍔 Где поесть
                 </button>
                 <button class="eda-category-btn" onclick="showEdaCategory('recipes')">
                     👨‍🍳 Как приготовить
@@ -169,6 +217,22 @@
         </div>
     </main>
 
+    <!-- ВАЖНО: Убрали async из Telegram скрипта! -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="script.js"></script>
+    
+    <!-- Скрипт для скрытия индикатора загрузки -->
+    <script>
+        // Скрыть индикатор загрузки когда всё готово
+        window.addEventListener('load', function() {
+            setTimeout(function() {
+                const loadingScreen = document.getElementById('loading-screen');
+                if (loadingScreen) {
+                    loadingScreen.classList.add('hidden');
+                    setTimeout(() => loadingScreen.remove(), 500);
+                }
+            }, 500);
+        });
+    </script>
 </body>
 </html>

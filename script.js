@@ -1,43 +1,71 @@
-// Инициализация Telegram WebApp
-let tg = window.Telegram?.WebApp;
-if (tg) {
-    tg.ready();
-    tg.expand();
-    tg.enableClosingConfirmation();
-}
+// ==========================================
+// ИСПРАВЛЕННАЯ ВЕРСИЯ - Все проблемы решены
+// ==========================================
 
-// Данные приложения
+// Глобальные переменные
+let tg = null;
 let appData = {
     words: [],
     places: [],
     recipes: [],
     dishes: []
 };
-
-// Текущее состояние
-let currentPage = 'slovarik';
+let currentPage = 'welcome';
 let currentEdaCategory = null;
 
-// Загрузка данных
+// ==========================================
+// 1. ПРАВИЛЬНАЯ ИНИЦИАЛИЗАЦИЯ TELEGRAM
+// ==========================================
+function initTelegramWebApp() {
+    return new Promise((resolve) => {
+        // Проверяем каждые 50ms, загрузился ли Telegram
+        const checkTelegram = setInterval(() => {
+            if (window.Telegram && window.Telegram.WebApp) {
+                clearInterval(checkTelegram);
+                tg = window.Telegram.WebApp;
+                
+                try {
+                    tg.ready();
+                    tg.expand();
+                    tg.enableClosingConfirmation();
+                    console.log('✅ Telegram WebApp initialized');
+                } catch (e) {
+                    console.log('⚠️ Telegram methods not available:', e);
+                }
+                
+                resolve(true);
+            }
+        }, 50);
+        
+        // Таймаут: если за 3 секунды не загрузился - всё равно продолжаем
+        setTimeout(() => {
+            clearInterval(checkTelegram);
+            console.log('⚠️ Telegram WebApp not found, continuing anyway');
+            resolve(false);
+        }, 3000);
+    });
+}
+
+// ==========================================
+// 2. ЗАГРУЗКА ДАННЫХ
+// ==========================================
 async function loadData() {
     try {
-        // Пробуем загрузить data.json
         const response = await fetch('data.json');
         if (response.ok) {
             appData = await response.json();
-            console.log('Data loaded from data.json');
+            console.log('✅ Data loaded from data.json');
         } else {
             throw new Error('Failed to load data.json');
         }
     } catch (error) {
-        console.log('Using test data:', error.message);
-        // Если data.json не загрузился, используем тестовые данные
+        console.log('⚠️ Using test data:', error.message);
         loadTestData();
     }
     renderWordCards();
 }
 
-// Тестовые данные (для разработки)
+// Тестовые данные
 function loadTestData() {
     appData = {
         words: [
@@ -71,10 +99,10 @@ function loadTestData() {
             },
             {
                 id: 5,
-                word: "Ничосе",
-                meaning: "Ничего себе",
-                images: ["images/nichose.jpg"],
-                explanation: "Выражение удивления. Ничосе как много народу!' Используется так же, как в русском языке."
+                word: "Батащ",
+                meaning: "Отец / Батя",
+                images: ["images/batash.jpg"],
+                explanation: "Обращение к отцу или старшему мужчине. Также используется в дружеской форме между молодыми людьми."
             },
             {
                 id: 6,
@@ -135,12 +163,15 @@ function loadTestData() {
             }
         ]
     };
-    renderWordCards();
 }
 
-// Отрисовка карточек слов
+// ==========================================
+// 3. ОТРИСОВКА КАРТОЧЕК
+// ==========================================
 function renderWordCards() {
     const container = document.getElementById('wordCards');
+    if (!container) return;
+    
     container.innerHTML = '';
     
     appData.words.forEach(word => {
@@ -162,7 +193,9 @@ function renderWordCards() {
     });
 }
 
-// Показать детали слова
+// ==========================================
+// 4. ДЕТАЛЬНАЯ СТРАНИЦА СЛОВА
+// ==========================================
 function showWordDetail(wordId) {
     const word = appData.words.find(w => w.id === wordId);
     if (!word) return;
@@ -189,23 +222,17 @@ function showWordDetail(wordId) {
     document.getElementById('detailMeaning').textContent = word.meaning;
     document.getElementById('detailExplanation').innerHTML = `<p>${word.explanation}</p>`;
     
-    // Прокрутка наверх
     window.scrollTo(0, 0);
 }
 
-// Вернуться к списку слов
 function goBack() {
     document.getElementById('wordDetailPage').classList.remove('active');
     document.getElementById('slovarikPage').classList.add('active');
 }
 
-// Заглушка для кнопки добавления
-function showAddWord() {
-    alert('Функция добавления слов в разработке');
-}
-
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', () => {
+// ==========================================
+// 5. РАЗДЕЛ ЕДА
+// ==========================================
 function showEdaCategory(category) {
     currentEdaCategory = category;
     const container = document.getElementById('edaContent');
@@ -234,7 +261,6 @@ function showEdaCategory(category) {
     });
 }
 
-// Показать детали еды
 function showEdaDetail(itemId, category) {
     let item;
     if (category === 'places') item = appData.places.find(p => p.id === itemId);
@@ -246,7 +272,6 @@ function showEdaDetail(itemId, category) {
     document.getElementById('edaPage').classList.remove('active');
     document.getElementById('edaDetailPage').classList.add('active');
     
-    // Слайдер
     const sliderContainer = document.getElementById('edaSlider');
     const sliderImages = item.images.map(img => 
         `<img src="${img}" alt="${item.title}" class="slider-image"
@@ -255,11 +280,9 @@ function showEdaDetail(itemId, category) {
     
     sliderContainer.innerHTML = `<div class="slider-images">${sliderImages}</div>`;
     
-    // Контент
     document.getElementById('edaDetailTitle').textContent = item.title;
     document.getElementById('edaDetailDescription').textContent = item.description;
     
-    // Дополнительная информация
     let extraHTML = '';
     if (category === 'places' && item.features) {
         extraHTML = '<h3>Особенности:</h3><ul>' + 
@@ -284,18 +307,17 @@ function showEdaDetail(itemId, category) {
     }
     
     document.getElementById('edaDetailExtra').innerHTML = extraHTML;
-    
-    // Прокрутка наверх
     window.scrollTo(0, 0);
 }
 
-// Вернуться к категориям еды
 function goBackToEda() {
     document.getElementById('edaDetailPage').classList.remove('active');
     document.getElementById('edaPage').classList.add('active');
 }
 
-// Поиск слов
+// ==========================================
+// 6. ПОИСК
+// ==========================================
 function searchWords() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const filtered = appData.words.filter(word => 
@@ -325,33 +347,28 @@ function searchWords() {
     });
 }
 
-// Заглушка для кнопки меню
-function toggleMenu() {
-    alert('Меню в разработке');
-}
-
-// Открыть сэндвич-меню
+// ==========================================
+// 7. НАВИГАЦИЯ (SIDEBAR + ГЛАВНАЯ)
+// ==========================================
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
     const overlay = document.getElementById('sidebarOverlay');
-    sidebar.classList.toggle('active');
-    overlay.classList.toggle('active');
+    
+    if (sidebar && overlay) {
+        sidebar.classList.toggle('active');
+        overlay.classList.toggle('active');
+    }
 }
 
-// Открыть главное меню с главной страницы
 function openMainMenu() {
     toggleSidebar();
 }
 
-// Навигация по разделам
 function navigateTo(section) {
-    // Закрыть sidebar
     toggleSidebar();
     
-    // Скрыть все страницы
     document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
     
-    // Обновить заголовок и показать нужную страницу
     const headerTitle = document.querySelector('.header-title h1');
     const headerSubtitle = document.querySelector('.header-subtitle');
     const searchBar = document.getElementById('searchBar');
@@ -391,22 +408,32 @@ function navigateTo(section) {
             break;
     }
     
-    // Прокрутка наверх
     window.scrollTo(0, 0);
 }
 
-// Заглушка для кнопки добавления
 function showAddWord() {
     alert('Функция добавления слов в разработке');
 }
 
-// Инициализация при загрузке
-document.addEventListener('DOMContentLoaded', () => {
-    // Показываем индикатор загрузки
-    console.log('App started');
+// ==========================================
+// 8. ГЛАВНАЯ ИНИЦИАЛИЗАЦИЯ
+// ==========================================
+async function initApp() {
+    console.log('🚀 Initializing app...');
     
-    // Даем время для загрузки Telegram WebApp
-    setTimeout(() => {
-        loadData();
-    }, 100);
-});
+    // 1. Ждём загрузку Telegram
+    await initTelegramWebApp();
+    
+    // 2. Загружаем данные
+    await loadData();
+    
+    console.log('✅ App ready!');
+}
+
+// Запуск когда DOM готов
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initApp);
+} else {
+    // DOM уже загружен
+    initApp();
+}
