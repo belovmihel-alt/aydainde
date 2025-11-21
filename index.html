@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Татарча Сленг</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="header-content">
+            <button class="menu-btn" onclick="toggleMenu()">☰</button>
+            <h1 id="pageTitle">Словарик</h1>
+            <button class="add-btn" onclick="showAddWord()">+ Add</button>
+        </div>
+        <div class="search-bar">
+            <input type="text" id="searchInput" placeholder="🔍 Поиск" oninput="searchWords()">
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main id="mainContent">
+        <!-- Словарик (по умолчанию) -->
+        <div id="slovarikPage" class="page active">
+            <div id="wordCards" class="word-cards"></div>
+        </div>
+
+        <!-- Страница детального слова -->
+        <div id="wordDetailPage" class="page">
+            <button class="back-btn" onclick="goBack()">← Назад</button>
+            <div class="image-slider" id="wordSlider"></div>
+            <div class="word-detail-content">
+                <h2 id="detailWord"></h2>
+                <p id="detailMeaning" class="meaning"></p>
+                <div id="detailExplanation" class="explanation"></div>
+            </div>
+        </div>
+
+        <!-- Страница Еда -->
+        <div id="edaPage" class="page">
+            <div class="eda-buttons">
+                <button class="eda-category-btn" onclick="showEdaCategory('places')">
+                    📍 Где поесть
+                </button>
+                <button class="eda-category-btn" onclick="showEdaCategory('recipes')">
+                    👨‍🍳 Как приготовить
+                </button>
+                <button class="eda-category-btn" onclick="showEdaCategory('dishes')">
+                    🍽️ Татарские блюда
+                </button>
+            </div>
+            <div id="edaContent" class="eda-content"></div>
+        </div>
+
+        <!-- Страница детального блюда/места/рецепта -->
+        <div id="edaDetailPage" class="page">
+            <button class="back-btn" onclick="goBackToEda()">← Назад</button>
+            <div class="image-slider" id="edaSlider"></div>
+            <div class="eda-detail-content">
+                <h2 id="edaDetailTitle"></h2>
+                <p id="edaDetailDescription" class="description"></p>
+                <div id="edaDetailExtra" class="extra-info"></div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Bottom Navigation -->
+    <nav class="bottom-nav">
+        <button class="nav-btn active" onclick="showPage('slovarik')">
+            <span class="nav-icon">📚</span>
+            <span class="nav-label">Словарик</span>
+        </button>
+        <button class="nav-btn" onclick="showPage('eda')">
+            <span class="nav-icon">🍽️</span>
+            <span class="nav-label">Еда</span>
+        </button>
+    </nav>
+
+    <script src="script.js"></script>
+</body>
+</html>
