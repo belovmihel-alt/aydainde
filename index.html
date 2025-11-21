@@ -6,27 +6,97 @@
     <meta name="theme-color" content="#FF6B35">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <title>Татарча Сленг</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Айда Инде!</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=2">
     <script src="https://telegram.org/js/telegram-web-app.js" async></script>
+    <style>
+        /* Critical CSS - inline для гарантированной загрузки */
+        body {
+            background-color: #1a1a1a !important;
+            color: #ffffff !important;
+            font-family: 'Montserrat', sans-serif !important;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background: linear-gradient(135deg, #FF6B35 0%, #F7931E 100%) !important;
+            border-radius: 0 0 25px 25px !important;
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
     <header>
         <div class="header-content">
-            <button class="menu-btn" onclick="toggleMenu()">☰</button>
-            <h1 id="pageTitle">Словарик</h1>
-            <button class="add-btn" onclick="showAddWord()">+ Add</button>
+            <button class="menu-btn" onclick="toggleSidebar()">☰</button>
+            <div class="header-title">
+                <h1 id="pageTitle">Айда Инде!</h1>
+                <p class="header-subtitle">От понаехавшего для понаехавших</p>
+            </div>
         </div>
-        <div class="search-bar">
+        <div class="search-bar" id="searchBar" style="display: none;">
             <input type="text" id="searchInput" placeholder="🔍 Поиск" oninput="searchWords()">
         </div>
     </header>
 
+    <!-- Sidebar Menu -->
+    <div id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h2>Меню</h2>
+            <button class="sidebar-close" onclick="toggleSidebar()">✕</button>
+        </div>
+        <nav class="sidebar-nav">
+            <a href="#" class="sidebar-item" onclick="navigateTo('slovarik')">
+                <span class="sidebar-item-title">Словарик</span>
+                <span class="sidebar-item-desc">Так говорят в Казани!</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="navigateTo('places')">
+                <span class="sidebar-item-title">Куда сходить</span>
+                <span class="sidebar-item-desc">Красивые места для прогулок</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="navigateTo('museums')">
+                <span class="sidebar-item-title">Музеи Казани</span>
+                <span class="sidebar-item-desc">Культурное просвещение</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="navigateTo('eda')">
+                <span class="sidebar-item-title">Еда</span>
+                <span class="sidebar-item-desc">Где и что поесть</span>
+            </a>
+            <a href="#" class="sidebar-item" onclick="navigateTo('legends')">
+                <span class="sidebar-item-title">Легенды и сказки</span>
+                <span class="sidebar-item-desc">Погружаемся в мифы Татарстана</span>
+            </a>
+        </nav>
+    </div>
+    <div id="sidebarOverlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+
     <!-- Main Content -->
     <main id="mainContent">
-        <!-- Словарик (по умолчанию) -->
-        <div id="slovarikPage" class="page active">
+        <!-- Главная страница (по умолчанию) -->
+        <div id="welcomePage" class="page active">
+            <div class="welcome-content">
+                <h2 class="welcome-title">Привет!</h2>
+                <p class="welcome-text">Это приложение поможет тебе провести лучший отпуск в Казани — легко, интересно и по-своему по-казански ;)</p>
+                
+                <div class="welcome-features">
+                    <h3>Здесь ты найдешь:</h3>
+                    <ul>
+                        <li><strong>Словарик местного сленга</strong> — чтобы понимать, что такое «Абау» и где находится «сковородка».</li>
+                        <li><strong>Куда сходить</strong> — лучшие места для прогулок, красивых видов и внезапных открытий.</li>
+                        <li><strong>Музеи Казани</strong> — от классики до необычных музейных точек.</li>
+                        <li><strong>Еда</strong> — где попробовать национальные блюда, что заказать первым делом и как приготовить любимые позиции дома.</li>
+                        <li><strong>Легенды и сказки</strong> — истории, которые делают Казань особенной.</li>
+                    </ul>
+                </div>
+            </div>
+            <button class="start-button" onclick="openMainMenu()">Начать!</button>
+        </div>
+        
+        <!-- Словарик -->
+        <div id="slovarikPage" class="page">
             <div id="wordCards" class="word-cards"></div>
         </div>
 
@@ -57,6 +127,36 @@
             <div id="edaContent" class="eda-content"></div>
         </div>
 
+        <!-- Страница Куда сходить -->
+        <div id="placesPage" class="page">
+            <div class="placeholder">
+                <div class="placeholder-icon">🏛️</div>
+                <h2>Куда сходить</h2>
+                <p>Лучшие места для прогулок в Казани</p>
+                <p class="placeholder-note">Раздел в разработке</p>
+            </div>
+        </div>
+
+        <!-- Страница Музеи -->
+        <div id="museumsPage" class="page">
+            <div class="placeholder">
+                <div class="placeholder-icon">🎨</div>
+                <h2>Музеи Казани</h2>
+                <p>От классики до необычных музейных точек</p>
+                <p class="placeholder-note">Раздел в разработке</p>
+            </div>
+        </div>
+
+        <!-- Страница Легенды -->
+        <div id="legendsPage" class="page">
+            <div class="placeholder">
+                <div class="placeholder-icon">📖</div>
+                <h2>Легенды и сказки</h2>
+                <p>Истории, которые делают Казань особенной</p>
+                <p class="placeholder-note">Раздел в разработке</p>
+            </div>
+        </div>
+
         <!-- Страница детального блюда/места/рецепта -->
         <div id="edaDetailPage" class="page">
             <button class="back-btn" onclick="goBackToEda()">← Назад</button>
@@ -68,18 +168,6 @@
             </div>
         </div>
     </main>
-
-    <!-- Bottom Navigation -->
-    <nav class="bottom-nav">
-        <button class="nav-btn active" onclick="showPage('slovarik')">
-            <span class="nav-icon">📚</span>
-            <span class="nav-label">Словарик</span>
-        </button>
-        <button class="nav-btn" onclick="showPage('eda')">
-            <span class="nav-icon">🍽️</span>
-            <span class="nav-label">Еда</span>
-        </button>
-    </nav>
 
     <script src="script.js"></script>
 </body>

@@ -199,30 +199,13 @@ function goBack() {
     document.getElementById('slovarikPage').classList.add('active');
 }
 
-// Показать страницу
-function showPage(pageName) {
-    // Обновить навигацию
-    document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.closest('.nav-btn').classList.add('active');
-    
-    // Скрыть все страницы
-    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
-    
-    // Показать нужную страницу
-    if (pageName === 'slovarik') {
-        document.getElementById('pageTitle').textContent = 'Словарик';
-        document.getElementById('slovarikPage').classList.add('active');
-        currentPage = 'slovarik';
-    } else if (pageName === 'eda') {
-        document.getElementById('pageTitle').textContent = 'Еда';
-        document.getElementById('edaPage').classList.add('active');
-        currentPage = 'eda';
-        currentEdaCategory = null;
-        document.getElementById('edaContent').innerHTML = '';
-    }
+// Заглушка для кнопки добавления
+function showAddWord() {
+    alert('Функция добавления слов в разработке');
 }
 
-// Показать категорию еды
+// Инициализация при загрузке
+document.addEventListener('DOMContentLoaded', () => {
 function showEdaCategory(category) {
     currentEdaCategory = category;
     const container = document.getElementById('edaContent');
@@ -345,6 +328,71 @@ function searchWords() {
 // Заглушка для кнопки меню
 function toggleMenu() {
     alert('Меню в разработке');
+}
+
+// Открыть сэндвич-меню
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebarOverlay');
+    sidebar.classList.toggle('active');
+    overlay.classList.toggle('active');
+}
+
+// Открыть главное меню с главной страницы
+function openMainMenu() {
+    toggleSidebar();
+}
+
+// Навигация по разделам
+function navigateTo(section) {
+    // Закрыть sidebar
+    toggleSidebar();
+    
+    // Скрыть все страницы
+    document.querySelectorAll('.page').forEach(page => page.classList.remove('active'));
+    
+    // Обновить заголовок и показать нужную страницу
+    const headerTitle = document.querySelector('.header-title h1');
+    const headerSubtitle = document.querySelector('.header-subtitle');
+    const searchBar = document.getElementById('searchBar');
+    
+    switch(section) {
+        case 'slovarik':
+            headerTitle.textContent = 'Словарик';
+            headerSubtitle.textContent = 'Так говорят в Казани!';
+            searchBar.style.display = 'block';
+            document.getElementById('slovarikPage').classList.add('active');
+            break;
+        case 'places':
+            headerTitle.textContent = 'Куда сходить';
+            headerSubtitle.textContent = 'Красивые места для прогулок';
+            searchBar.style.display = 'none';
+            document.getElementById('placesPage').classList.add('active');
+            break;
+        case 'museums':
+            headerTitle.textContent = 'Музеи Казани';
+            headerSubtitle.textContent = 'Культурное просвещение';
+            searchBar.style.display = 'none';
+            document.getElementById('museumsPage').classList.add('active');
+            break;
+        case 'eda':
+            headerTitle.textContent = 'Еда';
+            headerSubtitle.textContent = 'Где и что поесть';
+            searchBar.style.display = 'none';
+            document.getElementById('edaPage').classList.add('active');
+            currentEdaCategory = null;
+            document.getElementById('edaContent').innerHTML = '';
+            break;
+        case 'legends':
+            headerTitle.textContent = 'Легенды и сказки';
+            headerSubtitle.textContent = 'Погружаемся в мифы Татарстана';
+            searchBar.style.display = 'none';
+            document.getElementById('legendsPage').classList.add('active');
+            break;
+    }
+    
+    // Прокрутка наверх
+    window.scrollTo(0, 0);
 }
 
 // Заглушка для кнопки добавления
