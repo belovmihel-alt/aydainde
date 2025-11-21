@@ -5,10 +5,7 @@
       "tatar": "Абау",
       "russian": "Вау",
       "pronunciation": "Абау",
-      "image": "https://via.placeholder.com/400x400/ff6b35/ffffff?text=Абау",
-      "images": [
-        "https://via.placeholder.com/400x400/ff6b35/ffffff?text=Абау"
-      ],
+      "images": ["images/abau.jpeg"],
       "explanation": "Выражение удивления, восхищения или восторга. Эквивалент русского 'вау!'",
       "examples": [
         "Абау, какая красота!",
@@ -20,10 +17,7 @@
       "tatar": "Сковородка",
       "russian": "Круглая площадь",
       "pronunciation": "Сковородка",
-      "image": "https://via.placeholder.com/400x400/ff8c42/ffffff?text=Сковородка",
-      "images": [
-        "https://via.placeholder.com/400x400/ff8c42/ffffff?text=Сковородка"
-      ],
+      "images": ["images/skovorodka.jpg"],
       "explanation": "Круглая площадь перед главным зданием КФУ. Любимое место встреч студентов.",
       "examples": [
         "Встретимся на сковородке в 5",
@@ -35,10 +29,7 @@
       "tatar": "Алга",
       "russian": "Вперёд / Давай",
       "pronunciation": "Алга",
-      "image": "https://via.placeholder.com/400x400/4a90e2/ffffff?text=Алга",
-      "images": [
-        "https://via.placeholder.com/400x400/4a90e2/ffffff?text=Алга"
-      ],
+      "images": ["images/alga.png"],
       "explanation": "Призыв к действию. Означает 'вперёд', 'давай', 'пошли'.",
       "examples": [
         "Алга, не стой!",
@@ -50,10 +41,7 @@
       "tatar": "Шәп",
       "russian": "Класс / Отлично",
       "pronunciation": "Шэп",
-      "image": "https://via.placeholder.com/400x400/7ed321/ffffff?text=Шәп",
-      "images": [
-        "https://via.placeholder.com/400x400/7ed321/ffffff?text=Шәп"
-      ],
+      "images": ["images/placeholder.jpg"],
       "explanation": "Выражение одобрения. Означает 'круто', 'классно', 'отлично'.",
       "examples": [
         "Шәп получилось!",
@@ -65,10 +53,7 @@
       "tatar": "Батащ",
       "russian": "Батя / Чувак",
       "pronunciation": "Баташ",
-      "image": "https://via.placeholder.com/400x400/f5a623/ffffff?text=Батащ",
-      "images": [
-        "https://via.placeholder.com/400x400/f5a623/ffffff?text=Батащ"
-      ],
+      "images": ["images/placeholder.jpg"],
       "explanation": "Дружеское обращение к парню, брату. Аналог 'чувак', 'братан'.",
       "examples": [
         "Эй, батащ, как дела?",
@@ -80,10 +65,7 @@
       "tatar": "Җола",
       "russian": "Парень / Молодой человек",
       "pronunciation": "Җола",
-      "image": "https://via.placeholder.com/400x400/bd10e0/ffffff?text=Җола",
-      "images": [
-        "https://via.placeholder.com/400x400/bd10e0/ffffff?text=Җола"
-      ],
+      "images": ["images/placeholder.jpg"],
       "explanation": "Обращение к молодому парню, джигиту.",
       "examples": [
         "Җола, подожди!",
@@ -95,10 +77,7 @@
       "tatar": "Матур",
       "russian": "Красиво",
       "pronunciation": "Матур",
-      "image": "https://via.placeholder.com/400x400/ff69b4/ffffff?text=Матур",
-      "images": [
-        "https://via.placeholder.com/400x400/ff69b4/ffffff?text=Матур"
-      ],
+      "images": ["images/matur.jpg"],
       "explanation": "Означает 'красиво', 'красивый'. Комплимент.",
       "examples": [
         "Матур очень!",
@@ -110,10 +89,7 @@
       "tatar": "Айда",
       "russian": "Пошли / Давай",
       "pronunciation": "Айда",
-      "image": "https://via.placeholder.com/400x400/50e3c2/ffffff?text=Айда",
-      "images": [
-        "https://via.placeholder.com/400x400/50e3c2/ffffff?text=Айда"
-      ],
+      "images": ["images/placeholder.jpg"],
       "explanation": "Призыв к совместному действию. 'Пошли', 'давай', 'поехали'.",
       "examples": [
         "Айда в кино!",
