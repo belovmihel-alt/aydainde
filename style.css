@@ -115,9 +115,34 @@ header {
 
 .header-content {
     display: flex;
-    align-items: flex-start;
-    gap: 15px;
-    margin-bottom: 15px;
+    align-items: center;
+    justify-content: center; /* По центру */
+    position: relative;
+    padding: 20px 15px 15px 15px;
+}
+
+.menu-btn {
+    position: absolute; /* Слева */
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    font-size: 24px;
+    width: 45px;
+    height: 45px;
+    border-radius: 12px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+}
+
+.header-title {
+    text-align: center;
+    flex: 1; /* Растягивается на всю ширину */
 }
 
 .header-title {
