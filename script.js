@@ -1,120 +1,17 @@
 // ==========================================
-// ИСПРАВЛЕННАЯ ВЕРСИЯ v2 - Фикс undefined
+// ФИНАЛЬНАЯ ВЕРСИЯ - работает с твоим data.json
 // ==========================================
 
-// Глобальные переменные
 let tg = null;
 let appData = {
     words: [],
-    places: [],
+    restaurants: [],
     recipes: [],
     dishes: []
 };
-let currentPage = 'welcome';
-let currentEdaCategory = null;
 
 // ==========================================
-// ТЕСТОВЫЕ ДАННЫЕ (используются если data.json не найден)
-// ==========================================
-const TEST_DATA = {
-    words: [
-        {
-            id: 1,
-            word: "Абау",
-            meaning: "Вау",
-            images: ["images/abau.jpg"],
-            explanation: "Так в Казани говорят 'ВАУ!' когда удивляются или восхищаются чем-то. Например: 'Абау, какая машина!'"
-        },
-        {
-            id: 2,
-            word: "Сковородка",
-            meaning: "Место перед КФУ",
-            images: ["images/skovorodka.jpg"],
-            explanation: "Круглая площадь перед главным корпусом Казанского федерального университета. Место встречи всех студентов. Названа так из-за круглой формы."
-        },
-        {
-            id: 3,
-            word: "Алга",
-            meaning: "Вперёд / Давай",
-            images: ["images/alga.jpg"],
-            explanation: "Универсальное слово-мотиватор. Используется когда нужно подбодрить: 'Алга, всё получится!' или 'Алга, пошли!'"
-        },
-        {
-            id: 4,
-            word: "Шәп",
-            meaning: "Класс / Отлично",
-            images: ["images/shap.jpg"],
-            explanation: "Когда что-то очень нравится или всё хорошо. 'Как дела? - Шәп!' Аналог русского 'класс' или 'супер'."
-        },
-        {
-            id: 5,
-            word: "Батащ",
-            meaning: "Отец / Батя",
-            images: ["images/batash.jpg"],
-            explanation: "Обращение к отцу или старшему мужчине. Также используется в дружеской форме между молодыми людьми."
-        },
-        {
-            id: 6,
-            word: "Җола",
-            meaning: "Пойдём",
-            images: ["images/jola.jpg"],
-            explanation: "Приглашение куда-то пойти. 'Җола в кино!' или 'Җола покурим'. Очень популярное слово среди молодёжи."
-        }
-    ],
-    places: [
-        {
-            id: 1,
-            title: "Дом Татарской Кулинарии",
-            description: "Лучшие традиционные татарские блюда в центре Казани",
-            images: ["images/dtk.jpg"],
-            address: "ул. Баумана, 31",
-            features: ["Аутентичная кухня", "Красивый интерьер", "Умеренные цены"]
-        },
-        {
-            id: 2,
-            title: "Кафе Чак-чак",
-            description: "Уютное место с домашней татарской едой",
-            images: ["images/chakchak-cafe.jpg"],
-            address: "ул. Петербургская, 9",
-            features: ["Домашняя кухня", "Быстрое обслуживание", "Большие порции"]
-        }
-    ],
-    recipes: [
-        {
-            id: 1,
-            title: "Эчпочмак",
-            description: "Классический татарский треугольник с мясом и картошкой",
-            images: ["images/echpochmak.jpg"],
-            ingredients: ["Мука - 500г", "Говядина - 300г", "Картофель - 3 шт", "Лук - 2 шт", "Масло - 100г"],
-            steps: [
-                "Замесить тесто из муки, воды и масла",
-                "Нарезать мясо, картофель и лук мелкими кубиками",
-                "Раскатать тесто, вырезать круги",
-                "Выложить начинку, сформировать треугольники",
-                "Выпекать 40 минут при 180°C"
-            ]
-        }
-    ],
-    dishes: [
-        {
-            id: 1,
-            title: "Бәлеш",
-            description: "Круглый пирог с мясом, визитная карточка татарской кухни",
-            images: ["images/balesh.jpg"],
-            info: "Готовится из дрожжевого теста с начинкой из мяса (обычно утка или курица) и картофеля. Отличается от эчпочмака круглой формой и размером."
-        },
-        {
-            id: 2,
-            title: "Чак-чак",
-            description: "Сладкий десерт из теста с медом",
-            images: ["images/chakchak.jpg"],
-            info: "Национальный татарский десерт. Готовится из небольших кусочков теста, обжаренных в масле и политых медовым сиропом. Подается на праздники."
-        }
-    ]
-};
-
-// ==========================================
-// 1. ПРАВИЛЬНАЯ ИНИЦИАЛИЗАЦИЯ TELEGRAM
+// 1. ИНИЦИАЛИЗАЦИЯ TELEGRAM
 // ==========================================
 function initTelegramWebApp() {
     return new Promise((resolve) => {
@@ -138,7 +35,7 @@ function initTelegramWebApp() {
         
         setTimeout(() => {
             clearInterval(checkTelegram);
-            console.log('⚠️ Telegram WebApp not found, continuing anyway');
+            console.log('⚠️ Telegram WebApp not found');
             resolve(false);
         }, 3000);
     });
@@ -155,25 +52,20 @@ async function loadData() {
         if (response.ok) {
             const data = await response.json();
             appData = data;
-            console.log('✅ Data loaded from data.json:', appData);
+            console.log('✅ Data loaded:', appData);
         } else {
             throw new Error('data.json not found');
         }
     } catch (error) {
-        console.log('⚠️ Using test data:', error.message);
-        appData = TEST_DATA;
-        console.log('📝 Test data loaded:', appData);
+        console.error('❌ Failed to load data.json:', error);
+        alert('Ошибка загрузки данных! Проверь что data.json в той же папке что и index.html');
     }
     
-    // ВАЖНО: Проверяем что данные есть
     if (!appData.words || appData.words.length === 0) {
-        console.error('❌ No words data!');
-        appData = TEST_DATA;
+        console.error('❌ No words in data!');
+        alert('В data.json нет слов!');
     }
     
-    console.log('📊 Words count:', appData.words.length);
-    
-    // Рендерим карточки
     renderWordCards();
 }
 
@@ -181,45 +73,39 @@ async function loadData() {
 // 3. ОТРИСОВКА КАРТОЧЕК
 // ==========================================
 function renderWordCards() {
-    console.log('🎨 Rendering word cards...');
+    console.log('🎨 Rendering cards...');
     
     const container = document.getElementById('wordCards');
-    if (!container) {
-        console.error('❌ Container #wordCards not found!');
-        return;
-    }
+    if (!container) return;
     
     container.innerHTML = '';
     
     if (!appData.words || appData.words.length === 0) {
-        console.error('❌ No words to display!');
-        container.innerHTML = '<p style="color: white; text-align: center; padding: 20px;">Нет данных для отображения</p>';
+        container.innerHTML = '<p style="color: white; text-align: center; padding: 20px;">Нет данных</p>';
         return;
     }
     
-    console.log('📝 Rendering', appData.words.length, 'words');
-    
     appData.words.forEach(word => {
-        console.log('Creating card for:', word.word);
-        
         const card = document.createElement('div');
         card.className = 'word-card';
         card.onclick = () => showWordDetail(word.id);
         
+        // Используем images[0] из data.json
+        const imageUrl = word.images && word.images[0] ? word.images[0] : 'https://via.placeholder.com/400x400/3a3a3a/ffffff?text=' + encodeURIComponent(word.tatar);
+        
         card.innerHTML = `
             <button class="card-menu-btn" onclick="event.stopPropagation();">⋯</button>
-            <img src="${word.images[0]}" alt="${word.word}" class="word-card-image" 
-                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22120%22%3E%3Crect fill=%22%233a3a3a%22 width=%22200%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${word.word}%3C/text%3E%3C/svg%3E'">
+            <img src="${imageUrl}" alt="${word.tatar}" class="word-card-image">
             <div class="word-card-content">
-                <div class="word-card-title">${word.word}</div>
-                <div class="word-card-subtitle">${word.meaning}</div>
+                <div class="word-card-title">${word.tatar}</div>
+                <div class="word-card-subtitle">${word.russian}</div>
             </div>
         `;
         
         container.appendChild(card);
     });
     
-    console.log('✅ Cards rendered!');
+    console.log('✅ Rendered', appData.words.length, 'cards');
 }
 
 // ==========================================
@@ -232,22 +118,35 @@ function showWordDetail(wordId) {
     document.getElementById('slovarikPage').classList.remove('active');
     document.getElementById('wordDetailPage').classList.add('active');
     
+    // Слайдер
     const sliderContainer = document.getElementById('wordSlider');
-    const sliderImages = word.images.map(img => 
-        `<img src="${img}" alt="${word.word}" class="slider-image" 
-              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22250%22%3E%3Crect fill=%22%232d2d2d%22 width=%22100%25%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23666%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${word.word}%3C/text%3E%3C/svg%3E'">`
+    const images = word.images || ['https://via.placeholder.com/400x250/3a3a3a/ffffff?text=' + encodeURIComponent(word.tatar)];
+    
+    const sliderImages = images.map(img => 
+        `<img src="${img}" alt="${word.tatar}" class="slider-image">`
     ).join('');
     
     sliderContainer.innerHTML = `
         <div class="slider-images">${sliderImages}</div>
-        ${word.images.length > 1 ? '<div class="slider-dots">' + word.images.map((_, i) => 
+        ${images.length > 1 ? '<div class="slider-dots">' + images.map((_, i) => 
             `<div class="slider-dot ${i === 0 ? 'active' : ''}"></div>`
         ).join('') + '</div>' : ''}
     `;
     
-    document.getElementById('detailWord').textContent = word.word;
-    document.getElementById('detailMeaning').textContent = word.meaning;
-    document.getElementById('detailExplanation').innerHTML = `<p>${word.explanation}</p>`;
+    // Контент
+    document.getElementById('detailWord').textContent = word.tatar;
+    document.getElementById('detailMeaning').textContent = word.russian;
+    
+    let explanationHTML = `<p>${word.explanation}</p>`;
+    if (word.examples && word.examples.length > 0) {
+        explanationHTML += '<h3 style="color: #FF6B35; margin-top: 20px;">Примеры:</h3><ul>';
+        word.examples.forEach(example => {
+            explanationHTML += `<li>${example}</li>`;
+        });
+        explanationHTML += '</ul>';
+    }
+    
+    document.getElementById('detailExplanation').innerHTML = explanationHTML;
     
     window.scrollTo(0, 0);
 }
@@ -261,25 +160,30 @@ function goBack() {
 // 5. РАЗДЕЛ ЕДА
 // ==========================================
 function showEdaCategory(category) {
-    currentEdaCategory = category;
     const container = document.getElementById('edaContent');
     container.innerHTML = '';
     
     let items = [];
-    if (category === 'places') items = appData.places;
-    else if (category === 'recipes') items = appData.recipes;
-    else if (category === 'dishes') items = appData.dishes;
+    if (category === 'places') items = appData.restaurants || [];
+    else if (category === 'recipes') items = appData.recipes || [];
+    else if (category === 'dishes') items = appData.dishes || [];
+    
+    if (items.length === 0) {
+        container.innerHTML = '<p style="color: white; text-align: center; padding: 20px;">Пока нет данных в этой категории</p>';
+        return;
+    }
     
     items.forEach(item => {
         const card = document.createElement('div');
         card.className = 'eda-card';
         card.onclick = () => showEdaDetail(item.id, category);
         
+        const imageUrl = 'https://via.placeholder.com/400x150/3a3a3a/ffffff?text=' + encodeURIComponent(item.name);
+        
         card.innerHTML = `
-            <img src="${item.images[0]}" alt="${item.title}" class="eda-card-image"
-                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22150%22%3E%3Crect fill=%22%233a3a3a%22 width=%22100%25%22 height=%22150%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${item.title}%3C/text%3E%3C/svg%3E'">
+            <img src="${imageUrl}" alt="${item.name}" class="eda-card-image">
             <div class="eda-card-content">
-                <div class="eda-card-title">${item.title}</div>
+                <div class="eda-card-title">${item.name}</div>
                 <div class="eda-card-description">${item.description}</div>
             </div>
         `;
@@ -290,7 +194,7 @@ function showEdaCategory(category) {
 
 function showEdaDetail(itemId, category) {
     let item;
-    if (category === 'places') item = appData.places.find(p => p.id === itemId);
+    if (category === 'places') item = appData.restaurants.find(r => r.id === itemId);
     else if (category === 'recipes') item = appData.recipes.find(r => r.id === itemId);
     else if (category === 'dishes') item = appData.dishes.find(d => d.id === itemId);
     
@@ -299,38 +203,37 @@ function showEdaDetail(itemId, category) {
     document.getElementById('edaPage').classList.remove('active');
     document.getElementById('edaDetailPage').classList.add('active');
     
-    const sliderContainer = document.getElementById('edaSlider');
-    const sliderImages = item.images.map(img => 
-        `<img src="${img}" alt="${item.title}" class="slider-image"
-              onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22100%25%22 height=%22250%22%3E%3Crect fill=%22%232d2d2d%22 width=%22100%25%22 height=%22250%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2224%22 fill=%22%23666%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${item.title}%3C/text%3E%3C/svg%3E'">`
-    ).join('');
+    const imageUrl = 'https://via.placeholder.com/400x250/3a3a3a/ffffff?text=' + encodeURIComponent(item.name);
+    document.getElementById('edaSlider').innerHTML = `<div class="slider-images"><img src="${imageUrl}" class="slider-image"></div>`;
     
-    sliderContainer.innerHTML = `<div class="slider-images">${sliderImages}</div>`;
-    
-    document.getElementById('edaDetailTitle').textContent = item.title;
+    document.getElementById('edaDetailTitle').textContent = item.name;
     document.getElementById('edaDetailDescription').textContent = item.description;
     
     let extraHTML = '';
-    if (category === 'places' && item.features) {
-        extraHTML = '<h3>Особенности:</h3><ul>' + 
-            item.features.map(f => `<li>${f}</li>`).join('') + 
-            '</ul>';
-        if (item.address) {
-            extraHTML += `<h3>Адрес:</h3><p>${item.address}</p>`;
-        }
+    
+    if (category === 'places') {
+        if (item.address) extraHTML += `<h3>Адрес:</h3><p>${item.address}</p>`;
+        if (item.price) extraHTML += `<h3>Цены:</h3><p>${item.price}</p>`;
+        if (item.recommendation) extraHTML += `<h3>Рекомендуем попробовать:</h3><p>${item.recommendation}</p>`;
     } else if (category === 'recipes') {
+        if (item.difficulty) extraHTML += `<h3>Сложность:</h3><p>${item.difficulty}</p>`;
         if (item.ingredients) {
-            extraHTML += '<h3>Ингредиенты:</h3><ul>' + 
-                item.ingredients.map(i => `<li>${i}</li>`).join('') + 
-                '</ul>';
+            extraHTML += '<h3>Ингредиенты:</h3><ul>';
+            item.ingredients.forEach(ing => {
+                extraHTML += `<li>${ing}</li>`;
+            });
+            extraHTML += '</ul>';
         }
         if (item.steps) {
-            extraHTML += '<h3>Приготовление:</h3><ul>' + 
-                item.steps.map((s, i) => `<li>${i + 1}. ${s}</li>`).join('') + 
-                '</ul>';
+            extraHTML += '<h3>Приготовление:</h3><ul>';
+            item.steps.forEach((step, i) => {
+                extraHTML += `<li>${i + 1}. ${step}</li>`;
+            });
+            extraHTML += '</ul>';
         }
-    } else if (category === 'dishes' && item.info) {
-        extraHTML = `<p>${item.info}</p>`;
+    } else if (category === 'dishes') {
+        if (item.ingredients) extraHTML += `<h3>Ингредиенты:</h3><p>${item.ingredients}</p>`;
+        if (item.history) extraHTML += `<h3>История:</h3><p>${item.history}</p>`;
     }
     
     document.getElementById('edaDetailExtra').innerHTML = extraHTML;
@@ -348,25 +251,32 @@ function goBackToEda() {
 function searchWords() {
     const query = document.getElementById('searchInput').value.toLowerCase();
     const filtered = appData.words.filter(word => 
-        word.word.toLowerCase().includes(query) || 
-        word.meaning.toLowerCase().includes(query)
+        word.tatar.toLowerCase().includes(query) || 
+        word.russian.toLowerCase().includes(query) ||
+        (word.explanation && word.explanation.toLowerCase().includes(query))
     );
     
     const container = document.getElementById('wordCards');
     container.innerHTML = '';
+    
+    if (filtered.length === 0) {
+        container.innerHTML = '<p style="color: white; text-align: center; padding: 20px;">Ничего не найдено</p>';
+        return;
+    }
     
     filtered.forEach(word => {
         const card = document.createElement('div');
         card.className = 'word-card';
         card.onclick = () => showWordDetail(word.id);
         
+        const imageUrl = word.images && word.images[0] ? word.images[0] : 'https://via.placeholder.com/400x400/3a3a3a/ffffff?text=' + encodeURIComponent(word.tatar);
+        
         card.innerHTML = `
             <button class="card-menu-btn" onclick="event.stopPropagation();">⋯</button>
-            <img src="${word.images[0]}" alt="${word.word}" class="word-card-image"
-                 onerror="this.src='data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 width=%22200%22 height=%22120%22%3E%3Crect fill=%22%233a3a3a%22 width=%22200%22 height=%22120%22/%3E%3Ctext x=%2250%25%22 y=%2250%25%22 font-size=%2220%22 fill=%22%23666%22 text-anchor=%22middle%22 dy=%22.3em%22%3E${word.word}%3C/text%3E%3C/svg%3E'">
+            <img src="${imageUrl}" alt="${word.tatar}" class="word-card-image">
             <div class="word-card-content">
-                <div class="word-card-title">${word.word}</div>
-                <div class="word-card-subtitle">${word.meaning}</div>
+                <div class="word-card-title">${word.tatar}</div>
+                <div class="word-card-subtitle">${word.russian}</div>
             </div>
         `;
         
@@ -375,7 +285,7 @@ function searchWords() {
 }
 
 // ==========================================
-// 7. НАВИГАЦИЯ (SIDEBAR + ГЛАВНАЯ)
+// 7. НАВИГАЦИЯ
 // ==========================================
 function toggleSidebar() {
     const sidebar = document.getElementById('sidebar');
@@ -424,7 +334,6 @@ function navigateTo(section) {
             headerSubtitle.textContent = 'Где и что поесть';
             searchBar.style.display = 'none';
             document.getElementById('edaPage').classList.add('active');
-            currentEdaCategory = null;
             document.getElementById('edaContent').innerHTML = '';
             break;
         case 'legends':
@@ -438,26 +347,18 @@ function navigateTo(section) {
     window.scrollTo(0, 0);
 }
 
-function showAddWord() {
-    alert('Функция добавления слов в разработке');
-}
-
 // ==========================================
-// 8. ГЛАВНАЯ ИНИЦИАЛИЗАЦИЯ
+// 8. ИНИЦИАЛИЗАЦИЯ
 // ==========================================
 async function initApp() {
     console.log('🚀 Initializing app...');
     
-    // 1. Ждём загрузку Telegram
     await initTelegramWebApp();
-    
-    // 2. Загружаем данные
     await loadData();
     
     console.log('✅ App ready!');
 }
 
-// Запуск когда DOM готов
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initApp);
 } else {

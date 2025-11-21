@@ -115,22 +115,21 @@ header {
 
 .header-content {
     display: flex;
-    align-items: flex-start;
+    align-items: center;
+    justify-content: center;
+    position: relative;
     gap: 15px;
     margin-bottom: 15px;
 }
 
 .header-title {
     text-align: center;
-    flex: 1; /* Растягивается на всю ширину */
-}
-
-.header-title {
     flex: 1;
-    text-align: center;
 }
 
 .menu-btn {
+    position: absolute;
+    left: 0;
     background: rgba(255, 255, 255, 0.2);
     border: none;
     color: white;
@@ -139,7 +138,6 @@ header {
     font-size: 16px;
     cursor: pointer;
     transition: all 0.3s;
-    flex-shrink: 0;
 }
 
 .menu-btn:active {
@@ -275,10 +273,14 @@ header {
     font-weight: 400;
 }
 
-/* Main Content */
+/* Main Content - ИСПРАВЛЕН ОТСТУП */
 main {
-    margin-top: 150px;
+    margin-top: 180px; /* Отступ от header */
     padding: 0 15px 20px;
+}
+
+#mainContent {
+    padding-top: 0; /* Убрали лишний отступ */
 }
 
 .page {
@@ -300,7 +302,7 @@ main {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     gap: 15px;
-    margin-top: 20px;
+    padding: 0;
 }
 
 .word-card {
@@ -460,6 +462,30 @@ main {
 
 .explanation p {
     margin-bottom: 15px;
+}
+
+.explanation h3 {
+    color: #FF6B35;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.explanation ul {
+    list-style: none;
+    padding-left: 0;
+}
+
+.explanation li {
+    padding: 5px 0;
+    padding-left: 20px;
+    position: relative;
+}
+
+.explanation li:before {
+    content: "▸";
+    position: absolute;
+    left: 0;
+    color: #FF6B35;
 }
 
 /* Eda Page */
@@ -645,17 +671,4 @@ main {
     .word-card-title {
         font-size: 14px;
     }
-}
-
-/* Отступ от header */
-#mainContent {
-    padding-top: 20px;
-}
-
-/* Карточки с отступами */
-.word-cards {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 15px;
-    padding: 0 15px 20px 15px;
 }

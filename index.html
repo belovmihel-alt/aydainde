@@ -10,10 +10,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="style.css?v=3">
+    <!-- ВАЖНО: Версия 999 для сброса кэша! -->
+    <link rel="stylesheet" href="style.css?v=999">
     
     <style>
-        /* Critical CSS - inline для гарантированной загрузки */
+        /* Critical CSS */
         body {
             background-color: #1a1a1a !important;
             color: #ffffff !important;
@@ -217,13 +218,12 @@
         </div>
     </main>
 
-    <!-- ВАЖНО: Убрали async из Telegram скрипта! -->
+    <!-- ВАЖНО: Без async + версия 999 для сброса кэша! -->
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
-    <script src="script.js?v=3"></script>
+    <script src="script.js?v=999"></script>
     
     <!-- Скрипт для скрытия индикатора загрузки -->
     <script>
-        // Скрыть индикатор загрузки когда всё готово
         window.addEventListener('load', function() {
             setTimeout(function() {
                 const loadingScreen = document.getElementById('loading-screen');
